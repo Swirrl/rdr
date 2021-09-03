@@ -101,10 +101,6 @@ fetch(`${endpoint}`, {
   .then(jsonld => frame(jsonld, framing))
   .then(jsonld => render(jsonld["@graph"]))
 
-const zip = (keys, vals) => {
-  return(keys.reduce((z, k, i) => ((z[k] = vals[i]), z), {}))
-}
-
 // appends expanded @id to uri property
 const append_expanded_uri = async (jsonld, context) => {
   const resources = jsonld["@graph"];
@@ -116,16 +112,6 @@ const append_expanded_uri = async (jsonld, context) => {
   const resource_with_uris = resources.map((r, i) => {return({...r, ...{ uri: expanded_ids[i]}})});
   jsonld["@graph"] = resource_with_uris;
   return(jsonld)
-}
-
-const check_dupes = (jsonld) => {
-  const resources = jsonld["@graph"];
-  const counts = resources.reduce((s,v) => {
-    (v["@id"] in s) ? s[v["@id"]] += 1 : s[v["@id"]] = 1
-    return(s)
-  }, {});
-  const dupes = Object.entries(counts).filter(([k,v]) => v == 1);
-  console.log(dupes);
 }
 
 const renderJson = (json) => {
@@ -149,15 +135,17 @@ const render_component = (component) => {
     ["p", "(no codelist)"]
   ;
 
-  const dimension = 
-    ["p.mb0", 
+  const dimension = [
+    [
+      "p.mb0",
       pmd_link(component.uri, component.label || "(missing component)"),
-      ["span.f7.ml1", uri_link(component.uri, component["@id"])],
-      ('comment' in component) && (component.comment != component.label) ? ["p.mt1.f6", component.comment] : []
-    ];
+      ["span.f7.ml1", uri_link(component.uri, component["@id"])]
+    ],
+    ('comment' in component) && (component.comment != component.label) ? ["p.f7.mt1.mb0", component.comment] : null
+  ];
 
   return(
-  ["div.cf", {},
+  ["div.cf.mb1", {},
     ["div.fl.w-100.w-50-ns.pr3", dimension],
     ["div.fl.w-100.w-50-ns.pr3", codelist]
   ])
@@ -181,13 +169,13 @@ const render = (components) => {
       if ('children' in b) {
         return(1)
       } else {
-        return(0)
+        return(b.label < a.label)
       }
     }
   })
 
   const doc = ["article.mw8.center",
-    ["h1.f1", "Reference Data Registry"],
+    ["h1.f1", "Components Register"],
     ["p.f3.lh-copy",
       "The ", ["a.link", { href: domain}, "Integrated Data Service"], " ",
       "uses the following components to describe statistical data; ",
@@ -198,14 +186,19 @@ const render = (components) => {
       "to the description of the RDF resources. Grey links provide URIs for ",
       "use in CSVW annotations of SPARQL queries etc. Descriptive comments are ",
       "provided where they exist and differ from the labels. The codelist ",
-      "adopted by each sub-component is shown on the right-hand side."],
+      "adopted by each sub-component is shown on the right-hand side; ",
+      "these are lists of values you can expect to find within the column."],
     components.map((c) => { return(
       ["div.cf", {},
-        ["h2.f2.mb0", pmd_link(c.uri, c.label  || "(missing component)")],
+        ["h2.f2.mb0", pmd_link(c.uri, c.label || "(missing component)")],
         ["span.f5", uri_link(c.uri, c["@id"])],
-        ('comment' in c) && (c.comment != c.label) ? ["p", c.comment] : [],
+        ('comment' in c) && (c.comment != c.label) ? ["p.mt2.mb2", c.comment] : null,
         
-        ('children' in c) ? c.children.map(render_component) : []// render_component(c)
+        ('children' in c) ?
+          ["details",
+            ["summary.f6", `${c.children.length} Sub-component${c.children.length>1 ? 's' : ''}`],
+            c.children.map(render_component)]
+        : null // render_component(c)
       ]
     )}),
   ];

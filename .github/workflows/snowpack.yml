@@ -1,0 +1,34 @@
+name: Snowpack
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install
+        uses: CultureHQ/actions-yarn@master
+        with:
+          args: install
+      - name: Build
+        uses: CultureHQ/actions-yarn@master
+        with:
+          args: build
+      - name: Committing changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          author_name: Snowpack Build
+          author_email: actions@github.com
+      - name: Deploy to GitHub Pages
+        uses: Cecilapp/GitHub-Pages-deploy@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          email: actions@github.com
+          build_dir: build
+          branch: gh-pages

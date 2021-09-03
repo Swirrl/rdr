@@ -1,4 +1,4 @@
-# Reference Data Registry
+# Reference Data Register
 
 Explore reference data from the Integrated Data Service - components and codelists.
 

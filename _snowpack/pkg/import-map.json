@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "@thi.ng/hiccup": "./@thi.ng/hiccup.js",
+    "jsonld": "./jsonld.js"
+  }
+}

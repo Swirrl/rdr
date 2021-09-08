@@ -1,5 +1,5 @@
 import { fromRDF, compact, frame, expand } from 'jsonld';
-import { serialize } from "@thi.ng/hiccup"
+import { serialize } from "@thi.ng/hiccup";
 
 const domain = 'https://staging.gss-data.org.uk';
 const endpoint = `${domain}/sparql`;

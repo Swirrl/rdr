@@ -1,5 +1,6 @@
 import { fromRDF, compact, frame, expand } from 'jsonld';
 import { serialize } from "@thi.ng/hiccup";
+import { render_nav } from "./nav";
 
 const domain = 'https://staging.gss-data.org.uk';
 const endpoint = `${domain}/sparql`;
@@ -29,7 +30,6 @@ const deserialise = async (text: string): Promise<object> => {
 const renderLoading = () => {
   document.getElementById("description").innerHTML = `<p class="f3">Loading...</p>`
 }
-
 
 const renderJson = (json: object) => {
   const pre = ["pre.ma0", {style: "white-space: pre-wrap"}, JSON.stringify(json, null, 2)]
@@ -86,8 +86,8 @@ const page = ["article#main.mw8.center",
           "Walking time to nearest GP from Woodlea Aveune, Manchester (Observation)"]]
     ],
   ],
-  ["form.f3.mt10", { name: "lookup" },
-    ["input#uri.w-100.mb2.ph2.pv1.b--black-10", { type: "url", "aria-label": "URI", placeholder: "URI"}],
+  ["form.f5.mt10", { name: "lookup" },
+    ["input#uri.w-100.f4.mb2.ph2.pv1.b--black-10", { type: "url", "aria-label": "URI", placeholder: "URI"}],
     ["div.tc", 
       ["a#dereference.br-pill.bg-blue.washed-blue.no-underline.ba.pv2.ph3.dib.grow.mr3", { href: "#"}, "Go to page"],
       ["a#fetch_description.br-pill.blue.no-underline.ba.pv2.ph3.dib.grow", { href: "#"}, "Fetch description here"]
@@ -95,19 +95,18 @@ const page = ["article#main.mw8.center",
   ],  
 ]
 
-document.body.innerHTML = serialize(page);
+render_nav();
+
+document.getElementById("app").innerHTML= serialize(page);
 
 const attach_handlers = () => {
   document.getElementById("fetch_description").onclick = fetch_and_render_description;
   document.getElementById("dereference").onclick = dereference;
   const examples = document.getElementById("examples").getElementsByTagName("a");
   for (let e of Array.from(examples)) {
-   // e.onclick = set_uri(e.uri)
     e.onclick = () => set_uri(e.dataset.uri)
   }
 
 }
 
 attach_handlers();
-
-//document.getElementById("linky").onclick = () => set_uri();

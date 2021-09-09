@@ -24,13 +24,13 @@ const page = ["article#main.mw8.center",
        ["span",
          "The Components Register provides descriptions of each component property ",
          "along with the sub-components and codelists involved."],
-       "/components.html"),
+       "./components.html"),
     li("Lookup Resources",
        ["span",
          "The URI Lookup tool helps you retreive resource descriptions. ",
          "You can either go to the page providing the description or fetch a ",
          "JSON-LD representation without leaving the tool"],
-       "/dereferencer.html")
+       "./dereferencer.html")
   ]
 ]
 

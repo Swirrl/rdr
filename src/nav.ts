@@ -9,9 +9,9 @@ const link = (path, title, home=false) => {
 const render_nav = () => {
   const nav = [
     "nav.pv3.pv4-ns.mw8.center",
-    link("/", "Reference Data Register", true),
-    link("/components.html", "Components"),
-    link("/dereferencer.html", "URI Lookup")
+    link("./", "Reference Data Register", true),
+    link("./components.html", "Components"),
+    link("./dereferencer.html", "URI Lookup")
   ];
   document.body.insertAdjacentHTML("afterbegin", serialize(nav));
   console.log("rendering nav")

@@ -1,8 +1,12 @@
 import {fromRDF} from "../_snowpack/pkg/jsonld.js";
 import {serialize} from "../_snowpack/pkg/@thi.ng/hiccup.js";
 import {render_nav} from "./nav.js";
-const domain = "https://staging.gss-data.org.uk";
-const endpoint = `${domain}/sparql`;
+const domain = () => {
+  return document.getElementById("domain").value;
+};
+const endpoint = () => {
+  return `${domain()}/sparql`;
+};
 const describe_query = (uri) => {
   return `CONSTRUCT { <${uri}> ?p ?o } WHERE { <${uri}> ?p ?o }`;
 };
@@ -14,7 +18,10 @@ const get_description = async (uri, endpoint2) => {
       "Content-Type": "application/sparql-query"
     },
     body: describe_query(uri)
-  }).then((response) => response.text());
+  }).then((response) => response.text()).catch((error) => {
+    renderError(error);
+    throw error;
+  });
   return triples;
 };
 const deserialise = async (text) => {
@@ -28,6 +35,10 @@ const renderJson = (json) => {
   const pre = ["pre.ma0", {style: "white-space: pre-wrap"}, JSON.stringify(json, null, 2)];
   document.getElementById("description").innerHTML = serialize(pre);
 };
+const renderError = (error) => {
+  const msg = ["span.light-red.f4", error];
+  document.getElementById("description").innerHTML = serialize(msg);
+};
 const ensure_description_div = () => {
   if (document.getElementById("description") === null) {
     const description = serialize(["div#description.bg-white.pa2.mv3.ba.b--black-10.f6"]);
@@ -37,11 +48,11 @@ const ensure_description_div = () => {
 const fetch_and_render_description = () => {
   ensure_description_div();
   renderLoading();
-  get_description(get_uri(), endpoint).then(deserialise).then(renderJson);
+  get_description(get_uri(), endpoint()).then(deserialise).then(renderJson);
 };
 const dereference = () => {
   const uri = encodeURIComponent(get_uri());
-  window.location.replace(`${domain}/resource?uri=${uri}`);
+  window.location.replace(`${domain()}/resource?uri=${uri}`);
 };
 const get_uri = () => {
   return document.getElementById("uri").value;
@@ -57,7 +68,7 @@ const page = [
     [
       "p.f3.lh-copy",
       "The ",
-      ["a.link", {href: domain}, "Integrated Data Service"],
+      ["a.link", {href: "https://staging.gss-data.org.uk"}, "Integrated Data Service"],
       " ",
       "provides a variety of resources to describe statistical data. You can use ",
       "this page to dereference URIs (i.e. go to the page which describes them) ",
@@ -95,7 +106,23 @@ const page = [
   [
     "form.f5.mt10",
     {name: "lookup"},
-    ["input#uri.w-100.f4.mb2.ph2.pv1.b--black-10", {type: "url", "aria-label": "URI", placeholder: "URI"}],
+    [
+      "div.cf",
+      [
+        "input#uri.fl.f4.mb2.ph2.pv1.b--black-10.input-reset",
+        {type: "url", "aria-label": "URI", placeholder: "URI", style: "width: 85%"}
+      ],
+      [
+        "select#domain.fl.f4.mb2.ph2.pv1.b--black-10",
+        {type: "url", "aria-label": "Domain", placeholder: "Domain", style: "width: 15%"},
+        Object.entries({
+          Staging: "https://staging.gss-data.org.uk",
+          Beta: "https://beta.gss-data.org.uk",
+          Live: "https://gss-data.org.uk",
+          Features: "https://features.staging.gss-data.org.uk"
+        }).map(([env, uri]) => ["option", {value: uri}, env])
+      ]
+    ],
     [
       "div.tc",
       ["a#dereference.br-pill.bg-blue.washed-blue.no-underline.ba.pv2.ph3.dib.grow.mr3", {href: "#"}, "Go to page"],

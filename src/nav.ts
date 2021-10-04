@@ -11,7 +11,8 @@ const render_nav = () => {
     "nav.pv3.pv4-ns.mw8.center",
     link("./", "Reference Data Register", true),
     link("./components.html", "Components"),
-    link("./dereferencer.html", "URI Lookup")
+    link("./dereferencer.html", "URI Lookup"),
+    link("https://github.com/Swirrl/rdr/", "GitHub")
   ];
   document.body.insertAdjacentHTML("afterbegin", serialize(nav));
 }

@@ -14,7 +14,6 @@ const render_nav = () => {
     link("./dereferencer.html", "URI Lookup")
   ];
   document.body.insertAdjacentHTML("afterbegin", serialize(nav));
-  console.log("rendering nav")
 }
 
 export { render_nav };

@@ -1,6 +1,7 @@
-import {fromRDF, compact, frame, expand} from "../_snowpack/pkg/jsonld.js";
+import {fromRDF, compact, frame} from "../_snowpack/pkg/jsonld.js";
 import {serialize} from "../_snowpack/pkg/@thi.ng/hiccup.js";
 import {render_nav} from "./nav.js";
+import {append_expanded_uri} from "./util.js";
 const domain = "https://staging.gss-data.org.uk";
 const endpoint = `${domain}/sparql`;
 const base = "http://gss-data.org.uk/";
@@ -115,20 +116,7 @@ fetch(`${endpoint}`, {
     "Content-Type": "application/sparql-query"
   },
   body: query
-}).then((response) => response.text()).then((text) => fromRDF(text, {format: "application/n-quads"})).then((jsonld) => compact(jsonld, context)).then((jsonld) => append_expanded_uri(jsonld, context)).then((jsonld) => frame(jsonld, framing)).then((jsonld) => render(jsonld["@graph"]));
-const append_expanded_uri = async (jsonld, context2) => {
-  const resources = jsonld["@graph"];
-  const compact_ids = resources.map((r) => r["@id"]);
-  const expanded_ids = (await expand({
-    "@context": {...context2, ...{resource: {"@type": "@id"}}},
-    resource: compact_ids
-  }))[0][`${base}resource`].map((r) => r["@id"]);
-  const resource_with_uris = resources.map((r, i) => {
-    return {...r, ...{uri: expanded_ids[i]}};
-  });
-  jsonld["@graph"] = resource_with_uris;
-  return jsonld;
-};
+}).then((response) => response.text()).then((text) => fromRDF(text, {format: "application/n-quads"})).then((jsonld) => compact(jsonld, context)).then((jsonld) => append_expanded_uri(jsonld, context, base)).then((jsonld) => frame(jsonld, framing)).then((jsonld) => render(jsonld["@graph"]));
 const renderJson = (json) => {
   document.body.innerHTML = `<pre>${JSON.stringify(json, null, 2)}</pre>`;
 };

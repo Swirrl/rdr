@@ -5,7 +5,7 @@ const domain = 'https://staging.gss-data.org.uk';
 
 const li = (title, text, link) => {
   const item = ["li.pv3.pv4-ns.bb.b--black-10",
-    ["a.link", { href: link},
+    ["a.link.dim", { href: link},
       ["b.db.f3.mb1", title],
       ["span.f4.db.lh-copy.measure", text]
     ]
@@ -21,16 +21,21 @@ const page = ["article#main.mw8.center",
   [
     "ul.list.pl0",
     li("Discover Components",
-       ["span",
+       ["span.dark-gray",
          "The Components Register provides descriptions of each component property ",
          "along with the sub-components and codelists involved."],
        "./components.html"),
     li("Lookup Resources",
-       ["span",
+       ["span.dark-gray",
          "The URI Lookup tool helps you retreive resource descriptions. ",
          "You can either go to the page providing the description or fetch a ",
          "JSON-LD representation without leaving the tool"],
-       "./dereferencer.html")
+       "./dereferencer.html"),
+    li("Search across Datasets",
+       ["span.dark-gray",
+         "The Code Search tool lets you search for datasets based upon the ",
+         "codelists that they adopt.",],
+       "./search.html")
   ]
 ]
 

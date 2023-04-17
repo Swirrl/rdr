@@ -2,7 +2,7 @@ import {fromRDF, compact, frame} from "../_snowpack/pkg/jsonld.js";
 import {serialize} from "../_snowpack/pkg/@thi.ng/hiccup.js";
 import {render_nav} from "./nav.js";
 import {append_expanded_uri} from "./util.js";
-const domain = "https://staging.gss-data.org.uk";
+const domain = "https://beta.gss-data.org.uk";
 const endpoint = `${domain}/sparql`;
 const base = "http://gss-data.org.uk/";
 const context = {

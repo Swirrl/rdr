@@ -3,7 +3,7 @@ import { serialize } from "@thi.ng/hiccup";
 import { render_nav } from './nav';
 import { append_expanded_uri } from './util';
 
-const domain = 'https://staging.gss-data.org.uk';
+const domain = 'https://beta.gss-data.org.uk';
 const endpoint = `${domain}/sparql`;
 const base = 'http://gss-data.org.uk/';
 
